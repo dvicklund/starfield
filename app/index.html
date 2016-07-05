@@ -1,0 +1,19 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8">
+    <title>Starfield</title>
+    <link rel="stylesheet" href="style.css">
+    <link rel="shortcut icon" type="image/png" href="/favicon.png">
+  </head>
+  <body>
+    <div id="container"></div>
+    <script src="starfield.js"></script>
+    <script async>
+      var container = document.getElementById('container')
+      var starfield = new Starfield()
+      starfield.init(container)
+      starfield.start()
+    </script>
+  </body>
+</html>
