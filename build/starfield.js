@@ -16,7 +16,7 @@ function Starfield() {
   this.height = 0;
   this.minVelocity = 15;
   this.maxVelocity = 100;
-  this.maxStarSize = 4;
+  this.maxStarSize = 3;
   this.starCount = 300;
   this.stars = [];
   this.intervalId = 0;
@@ -47,6 +47,11 @@ Starfield.prototype.init = function(div) {
   this.canvas.height = this.height
 
   function move(e) {
+    if(e.touches) {
+      e.preventDefault()
+      e.x = e.touches[0].pageX;
+      e.y = e.touches[0].pageY;
+    }
     self.mousePos = e
   }
 
@@ -62,6 +67,24 @@ Starfield.prototype.init = function(div) {
     // self.dragStart = null
     // self.mousePos = null
     window.removeEventListener('mousemove', move)
+  })
+
+  window.addEventListener('touchstart', function(e) {
+    e.preventDefault()
+    self.dragging = true
+    self.dragStart = e
+    self.dragStart.x = e.touches[0].pageX;
+    self.dragStart.y = e.touches[0].pageY;
+    window.addEventListener('touchmove', move)
+  })
+
+  window.addEventListener('touchend', function(e) {
+    e.preventDefault()
+    self.dragging = false
+    self.dropStars()
+    // self.dragStart = null
+    // self.mousePos = null
+    window.removeEventListener('touchmove', move)
   })
 }
 
@@ -90,9 +113,9 @@ Starfield.prototype.update = function() {
   for(var i = 0; i < this.stars.length; i++) {
     var star = this.stars[i]
     star.y += dt * star.velocity
-    if(star.y > this.height) {
+    if(star.y > this.height + star.size) {
       this.stars[i] = new Star(Math.random() * this.width,
-                               0,
+                               -star.size,
                                Math.random() * this.maxStarSize + 1,
                                (Math.random() * (this.maxVelocity - this.minVelocity)) + this.minVelocity,
                                starColors[Math.floor(Math.random() * colorCount)])
