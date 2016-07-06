@@ -58,9 +58,9 @@ Starfield.prototype.init = function(div) {
 
   window.addEventListener('mouseup', function(e) {
     self.dragging = false
-    self.dropStars();
-    self.dragStart = null
-    self.mousePos = null
+    self.dropStars()
+    // self.dragStart = null
+    // self.mousePos = null
     window.removeEventListener('mousemove', move)
   })
 }
@@ -118,8 +118,8 @@ Starfield.prototype.draw = function() {
     ctx.strokeStyle = '#FFFFFF'
     ctx.beginPath()
     ctx.arc(
-      ((this.mousePos.x - this.dragStart.x)/2) + this.dragStart.x,
-      ((this.mousePos.y - this.dragStart.y)/2) + this.dragStart.y,
+      ((this.mousePos.x + this.dragStart.x)/2),
+      ((this.mousePos.y + this.dragStart.y)/2),
       Math.max(Math.abs(this.mousePos.x - this.dragStart.x)/2, Math.abs(this.mousePos.y - this.dragStart.y)/2),
       0, 2*Math.PI)
     ctx.stroke()
@@ -127,9 +127,26 @@ Starfield.prototype.draw = function() {
 }
 
 Starfield.prototype.dropStars = function() {
-  for(var i = 0; i < this.stars.length; i++) {
-    if(this.stars[i].x) {
+  if(this.mousePos) {
+    var circle = {
+      xCenter: (this.mousePos.x + this.dragStart.x) / 2,
+      yCenter: (this.mousePos.y + this.dragStart.y) / 2,
+      radius: Math.max(Math.abs(this.mousePos.x - this.dragStart.x)/2, Math.abs(this.mousePos.y - this.dragStart.y)/2)
+    }
 
+    for(var i = 0; i < this.stars.length; i++) {
+      if(Math.pow(this.stars[i].x - circle.xCenter, 2) + Math.pow(this.stars[i].y - circle.yCenter, 2) < Math.pow(circle.radius, 2)) {
+        this.stars[i] = new Star(Math.random() * this.width,
+                                 0,
+                                 Math.random() * this.maxStarSize + 1,
+                                 (Math.random() * (this.maxVelocity - this.minVelocity)) + this.minVelocity,
+                                 starColors[Math.floor(Math.random() * colorCount)])
+
+      }
     }
   }
+
+
+  this.mousePos = null;
+  this.dragStart = null;
 }
