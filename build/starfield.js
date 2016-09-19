@@ -103,7 +103,7 @@ Starfield.prototype.start = function() {
 
   var self = this;
   this.intervalId = setInterval(function() {
-    self.update()
+    self.updateHorizontal()
     self.draw()
   }, 1000 / this.fps)
 }
@@ -119,6 +119,21 @@ Starfield.prototype.update = function() {
                                Math.random() * this.maxStarSize + 1,
                                (Math.random() * (this.maxVelocity - this.minVelocity)) + this.minVelocity,
                                starColors[Math.floor(Math.random() * colorCount)])
+    }
+  }
+}
+
+Starfield.prototype.updateHorizontal = function() {
+  var dt = 1/this.fps;
+  for(var i = 0; i < this.stars.length; i++) {
+    var star = this.stars[i]
+    star.x += dt * star.velocity
+    if(star.x > this.width + star.size) {
+      this.stars[i] = new Star(-star.size,
+                              Math.random() * this.height,
+                              Math.random() * this.maxStarSize + 1,
+                              (Math.random() * (this.maxVelocity - this.minVelocity)) + this.minVelocity,
+                              starColors[Math.floor(Math.random() * colorCount)])
     }
   }
 }
